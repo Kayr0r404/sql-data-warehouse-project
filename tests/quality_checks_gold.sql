@@ -1,4 +1,3 @@
-
 /*
 ===============================================================================
 Quality Checks
@@ -11,7 +10,6 @@ Script Purpose:
     - Validation of relationships in the data model for analytical purposes.
 
 Usage Notes:
-    - Run these checks after data loading Silver Layer.
     - Investigate and resolve any discrepancies found during the checks.
 ===============================================================================
 */
