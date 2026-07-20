@@ -15,55 +15,59 @@ This document outlines the naming conventions used for schemas, tables, views, c
 
 ---
 
-https://i-spark.nl/en/blog/dbt-naming-conventions-and-medallion-architecture/
+[Source: i-Spark Blog - DBT Naming Conventions and Medallion Architecture](https://i-spark.nl/en/blog/dbt-naming-conventions-and-medallion-architecture/)
+
 ## **General Principles**
 
-- **Naming Conventions**: Use snake_case Use - lowercase letters and underscores (`_`) to separate words.
-- **Languguage**: English.
+- **Naming Conventions**: Use snake_case, with lowercase letters and underscores (`_`) to separate words.
+- **Language**: Use English for all names.
 - **Avoid Reserved Words**: Do not use SQL reserved words as object names.
 
 ## **Table Naming Conventions**
-### Bronze Rules
+
+### **Bronze Rules**
 - All names must start with the source system name, and table names must match their original names without renaming.
 - **`<sourcesystem>_<entity>`**  
   - `<sourcesystem>`: Name of the source system (e.g., `crm`, `erp`).  
   - `<entity>`: Exact table name from the source system.  
-  - `crm_customer_info` → Customer information from the CRM system.
+  - Example: `crm_customer_info` → Customer information from the CRM system.
 
-### Silver Rules
+### **Silver Rules**
 - All names must start with the source system name, and table names must match their original names without renaming.
 - **`<sourcesystem>_<entity>`**  
   - `<sourcesystem>`: Name of the source system (e.g., `crm`, `erp`).  
   - `<entity>`: Exact table name from the source system.  
-  - `crm_customer_info` → Customer information from the CRM system.
+  - Example: `crm_customer_info` → Customer information from the CRM system.
 
-### Gold Rules
-- All names must be Use meaningful, business-aligned names for tables, starting with the category prefix.
-- **`<category>_<entity>`** 
+### **Gold Rules**
+- All names must use meaningful, business-aligned names for tables, starting with the category prefix.
+- **`<category>_<entity>`**  
   - `<category>`: Describes the role of the table, such as `dim` (dimension) or `fact` (fact table).  
   - `<entity>`: Descriptive name of the table, aligned with the business domain (e.g., `customers`, `products`, `sales`).  
-  - `dim_customers` → Dimension table for customer data.  
-  - `fact_sales` → Fact table containing sales transactions.  
+  - Examples:
+    - `dim_customers` → Dimension table for customer data.  
+    - `fact_sales` → Fact table containing sales transactions.  
 
 #### **Glossary of Category Patterns**
 
 | Pattern     | Meaning                           | Example(s)                              |
 |-------------|-----------------------------------|-----------------------------------------|
-| `dim_`      | Dimension table                  | `dim_customer`, `dim_product`            |
-| `fact_`     | Fact table                       | `fact_sales`                             |
-| `agg_`      | Aggregated table                 | `agg_customers`, `agg_sales_monthly`     |
+| `dim_`      | Dimension table                  | `dim_customer`, `dim_product`           |
+| `fact_`     | Fact table                       | `fact_sales`                            |
+| `agg_`      | Aggregated table                 | `agg_customers`, `agg_sales_monthly`    |
 
 ## **Column Naming Conventions**
+
 ### **Surrogate Keys**  
 - All primary keys in dimension tables must use the suffix `_key`.
-- **`<table_name>_key`** 
-  - `<table_name>`: Refers to the name of the table or entity the key belongs to.
-  - `key`: A suffix indicating that this column is a surrogate key.
-  - `customer_key` → is a surrogate key in the `dim_customers` table.
+- **`<table_name>_key`**  
+  - `<table_name>`: Refers to the name of the table or entity the key belongs to.  
+  - `_key`: A suffix indicating that this column is a surrogate key.  
+  - Example: `customer_key` → Surrogate key in the `dim_customers` table.
   
 ### **Technical Columns**
 - All technical columns must start with the prefix `dwh_`, followed by a descriptive name indicating the column's purpose.
-- **`dwh_<Column_name>`** 
-  - `dwh`: Prefix exclusively for system-generated metadata.
-  - `<column_name>`: A suffix indicating that this column is a surrogate key.
-  - `dwh_load_date` → System-generated column used to store the date when the record was loaded.
+- **`dwh_<column_name>`**  
+  - `dwh`: Prefix exclusively for system-generated metadata.  
+  - `<column_name>`: Descriptive name indicating the column's purpose.  
+  - Example: `dwh_load_date` → System-generated column used to store the date when the record was loaded.
