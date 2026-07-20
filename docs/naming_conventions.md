@@ -15,8 +15,6 @@ This document outlines the naming conventions used for schemas, tables, views, c
 
 ---
 
-[Source: i-Spark Blog - DBT Naming Conventions and Medallion Architecture](https://i-spark.nl/en/blog/dbt-naming-conventions-and-medallion-architecture/)
-
 ## **General Principles**
 
 - **Naming Conventions**: Use snake_case, with lowercase letters and underscores (`_`) to separate words.
