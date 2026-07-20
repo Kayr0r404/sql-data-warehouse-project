@@ -47,16 +47,16 @@ The Gold Layer is the business-level data representation, structured to support 
 ### 3. **gold.fact_sales**
 - **Purpose:** Stores transactional sales data for analytical purposes.
 - **Columns:**
-  | Column Name      | Data Type     | Description                                    |
-  |------------------|---------------|------------------------------------------------|
-  | order_number     | NVARCHAR(50)  | Unique identifier for the sales order.         |
-  | product_key      | INT           | Foreign key linking to `gold.dim_products`.    |
-  | customer_key     | INT           | Foreign key linking to `gold.dim_customers`.   |
-  | order_date       | DATE          | Date when the order was placed.                |
-  | shipping_date    | DATE          | Date when the order was shipped.               |
-  | due_date         | DATE          | Due date for the order.                        |
-  | sales_amount     | INT           | Total sales amount for the order.              |
-  | quantity         | INT           | Quantity of products sold.                     |
-  | price            | INT           | Price per unit of product sold.                |
-  | dwh_create_date  | DATETIME2     | Record creation timestamp in the data warehouse. |
+
+| Column Name     | Data Type     | Description                                                                                   |
+|-----------------|---------------|-----------------------------------------------------------------------------------------------|
+| order_number    | NVARCHAR(50)  | A unique alphanumeric identifier for each sales order (e.g., 'SO54496').                      |
+| product_key     | INT           | Surrogate key linking the order to the product dimension table.                               |
+| customer_key    | INT           | Surrogate key linking the order to the customer dimension table.                              |
+| order_date      | DATE          | The date when the order was placed.                                                           |
+| shipping_date   | DATE          | The date when the order was shipped to the customer.                                          |
+| due_date        | DATE          | The date when the order payment was due.                                                      |
+| sales_amount    | INT           | The total monetary value of the sale for the line item, in whole currency units (e.g., 25).   |
+| quantity        | INT           | The number of units of the product ordered for the line item (e.g., 1).                       |
+| price           | INT           | The price per unit of the product for the line item, in whole currency units (e.g., 25).      |
 
