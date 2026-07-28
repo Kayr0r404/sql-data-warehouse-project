@@ -52,7 +52,7 @@ This document outlines the naming conventions used for schemas, tables, views, c
 |-------------|-----------------------------------|-----------------------------------------|
 | `dim_`      | Dimension table                  | `dim_customer`, `dim_product`           |
 | `fact_`     | Fact table                       | `fact_sales`                            |
-| `agg_`      | Aggregated table                 | `agg_customers`, `agg_sales_monthly`    |
+| `report_`   | Report table                     | `report_customers`, `report_sales_monthly`   |
 
 ## **Column Naming Conventions**
 
