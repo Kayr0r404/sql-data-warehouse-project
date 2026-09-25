@@ -2,8 +2,6 @@
 
 A comprehensive SQL Server data warehouse implementation following the **Medallion Architecture** (Bronze → Silver → Gold), designed to transform raw CRM and ERP source data into business-ready analytical models.
 
-![Data Warehouse Architecture](docs/data_architecture.png)
-
 ## Table of Contents
 
 - [Architecture](#architecture)
@@ -14,7 +12,6 @@ A comprehensive SQL Server data warehouse implementation following the **Medalli
 - [Usage](#usage)
 - [Data Quality Checks](#data-quality-checks)
 - [Naming Conventions](#naming-conventions)
-- [License](#license)
 
 ---
 
@@ -26,15 +23,12 @@ This project follows the **Medallion Architecture** pattern, organizing data int
 - **Silver** — Cleaned, standardized, and transformed data ready for integration.
 - **Gold** — Business-ready dimension and fact tables structured in a **Star Schema** for analytics and reporting.
 
-![Data Flow](docs/data_flow.png)
-
-![Data Integration](docs/data_integration.png)
-
 ---
 
 ## Data Layers
 
 ### 🥉 Bronze Layer
+
 The bronze layer stores raw data exactly as it exists in the source systems. No transformations are applied.
 
 **Tables:**
@@ -48,6 +42,7 @@ The bronze layer stores raw data exactly as it exists in the source systems. No 
 | `bronze.erp_px_cat_g1v2` | ERP | Product category mappings |
 
 ### 🥈 Silver Layer
+
 The silver layer applies data cleansing, standardization, deduplication, and type conversions to the bronze data.
 
 **Tables:**
@@ -61,6 +56,7 @@ The silver layer applies data cleansing, standardization, deduplication, and typ
 | `silver.erp_px_cat_g1v2` | Product category reference data |
 
 ### 🥇 Gold Layer
+
 The gold layer presents a **Star Schema** with dimension and fact views optimized for analytical querying.
 
 **Views:**
@@ -70,8 +66,6 @@ The gold layer presents a **Star Schema** with dimension and fact views optimize
 | `gold.dim_products` | Dimension | Current product catalog with category & subcategory attributes |
 | `gold.fact_sales` | Fact | Transactional sales facts linked to customer & product dimensions |
 
-![Data Model](docs/data_model.png)
-
 ---
 
 ## Source Data
@@ -79,18 +73,20 @@ The gold layer presents a **Star Schema** with dimension and fact views optimize
 The project ingests data from two source systems:
 
 ### CRM Source (`datasets/source_crm/`)
-| File | Records | Description |
-|------|---------|-------------|
-| `cust_info.csv` | ~18K | Customer profiles |
-| `prd_info.csv` | ~400 | Product catalog |
-| `sales_details.csv` | ~60K | Sales transactions |
+
+| File                | Records | Description        |
+| ------------------- | ------- | ------------------ |
+| `cust_info.csv`     | ~18K    | Customer profiles  |
+| `prd_info.csv`      | ~400    | Product catalog    |
+| `sales_details.csv` | ~60K    | Sales transactions |
 
 ### ERP Source (`datasets/source_erp/`)
-| File | Description |
-|------|-------------|
-| `CUST_AZ12.csv` | Customer demographic data (birthdate, gender) |
-| `LOC_A101.csv` | Country/location codes |
-| `PX_CAT_G1V2.csv` | Product category and subcategory mappings |
+
+| File              | Description                                   |
+| ----------------- | --------------------------------------------- |
+| `CUST_AZ12.csv`   | Customer demographic data (birthdate, gender) |
+| `LOC_A101.csv`    | Country/location codes                        |
+| `PX_CAT_G1V2.csv` | Product category and subcategory mappings     |
 
 ---
 
@@ -132,6 +128,7 @@ sql-data-warehouse-project/
 ## Getting Started
 
 ### Prerequisites
+
 - **SQL Server** (2016 or later) or **SQL Server Express**
 - Access to the `master` database to create the `DataWarehouse` database
 - CSV files placed in the expected directory paths (see `scripts/bronze/proc_load_bronze.sql` for path configuration)
@@ -139,31 +136,37 @@ sql-data-warehouse-project/
 ### Setup Instructions
 
 1. **Create the Database and Schemas**
+
    ```sql
    -- Run the init script to create the DataWarehouse database and schemas
    -- WARNING: This drops the existing DataWarehouse database if it exists
    EXEC your_database;
    ```
+
    Or run `scripts/init_database.sql` directly in SQL Server Management Studio (SSMS).
 
 2. **Create Bronze Tables**
+
    ```sql
    -- Execute the bronze DDL script
    -- Creates all bronze schema tables
    ```
 
 3. **Load Bronze Layer**
+
    ```sql
    -- Update file paths in scripts/bronze/proc_load_bronze.sql if needed, then execute:
    EXEC bronze.load_bronze;
    ```
 
 4. **Create Silver Tables**
+
    ```sql
    -- Execute the silver DDL script
    ```
 
 5. **Load Silver Layer**
+
    ```sql
    -- Transforms and cleanses bronze data into silver
    EXEC silver.load_silver;
@@ -192,9 +195,9 @@ SELECT * FROM gold.dim_products;
 SELECT * FROM gold.fact_sales;
 
 -- Example: Total sales by customer
-SELECT 
-    c.first_name, 
-    c.last_name, 
+SELECT
+    c.first_name,
+    c.last_name,
     SUM(f.sales_amount) AS total_sales
 FROM gold.fact_sales f
 JOIN gold.dim_customers c ON f.customer_key = c.customer_key
@@ -209,6 +212,7 @@ ORDER BY total_sales DESC;
 Quality validation scripts are provided to ensure data integrity at each layer.
 
 ### Silver Layer Checks (`tests/quality_checks_silver.sql`)
+
 - NULL or duplicate primary keys
 - Unwanted spaces in string fields
 - Invalid date ranges and orders
@@ -217,11 +221,13 @@ Quality validation scripts are provided to ensure data integrity at each layer.
 - Standardized value validation (gender, country, product line)
 
 ### Gold Layer Checks (`tests/quality_checks_gold.sql`)
+
 - Uniqueness of surrogate keys in dimension tables
 - Referential integrity between fact and dimension tables
 - Orphaned records in the fact table
 
 **Run after each layer load:**
+
 ```sql
 -- Execute quality check scripts in SSMS
 -- All checks should return empty result sets (no issues)
@@ -233,14 +239,14 @@ Quality validation scripts are provided to ensure data integrity at each layer.
 
 The project follows a consistent naming convention across all layers:
 
-| Layer | Pattern | Example |
-|-------|---------|---------|
-| Bronze | `<source_system>_<entity>` | `crm_cust_info` |
-| Silver | `<source_system>_<entity>` | `crm_cust_info` |
-| Gold | `<category>_<entity>` | `dim_customers`, `fact_sales` |
-| Stored Procedures | `load_<layer>` | `load_bronze`, `load_silver` |
-| Surrogate Keys | `<table>_key` | `customer_key`, `product_key` |
-| Technical Columns | `dwh_<column>` | `dwh_create_date` |
+| Layer             | Pattern                    | Example                       |
+| ----------------- | -------------------------- | ----------------------------- |
+| Bronze            | `<source_system>_<entity>` | `crm_cust_info`               |
+| Silver            | `<source_system>_<entity>` | `crm_cust_info`               |
+| Gold              | `<category>_<entity>`      | `dim_customers`, `fact_sales` |
+| Stored Procedures | `load_<layer>`             | `load_bronze`, `load_silver`  |
+| Surrogate Keys    | `<table>_key`              | `customer_key`, `product_key` |
+| Technical Columns | `dwh_<column>`             | `dwh_create_date`             |
 
 See `docs/naming_conventions.md` for the full specification.
 
@@ -263,28 +269,3 @@ See `docs/naming_conventions.md` for the full specification.
                                                     │ dim_ / fact_ │
                                                     └──────────────┘
 ```
-
----
-
-## License
-
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
-
----
-
-## Author
-
-**Baraa Khatib Salkini**
-
----
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-## Acknowledgments
-
-- Data sourced from AdventureWorks-style CRM and ERP systems
-- Medallion Architecture pattern inspired by Databricks best practices
