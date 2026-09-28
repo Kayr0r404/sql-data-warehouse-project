@@ -2,6 +2,7 @@
 
 A comprehensive SQL Server data warehouse implementation following the **Medallion Architecture** (Bronze → Silver → Gold), designed to transform raw CRM and ERP source data into business-ready analytical models.
 
+
 ## Table of Contents
 
 - [Architecture](#architecture)
